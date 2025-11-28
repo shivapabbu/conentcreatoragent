@@ -62,20 +62,16 @@ export default function Home() {
 
     let blob: Blob
     let filename: string
-    let mimeType: string
 
     if (format === 'html') {
       blob = new Blob([content.html_content], { type: 'text/html' })
       filename = 'content.html'
-      mimeType = 'text/html'
     } else if (format === 'markdown') {
       blob = new Blob([content.markdown_content], { type: 'text/markdown' })
       filename = 'content.md'
-      mimeType = 'text/markdown'
     } else {
       blob = new Blob([JSON.stringify(content, null, 2)], { type: 'application/json' })
       filename = 'content.json'
-      mimeType = 'application/json'
     }
 
     const url = URL.createObjectURL(blob)
@@ -90,22 +86,22 @@ export default function Home() {
 
   return (
     <div className="container">
-      <div className="header">
-        <h1>🚀 Intelligent Content Creator</h1>
-        <p>AWS Bedrock-powered content generation platform</p>
+      <div className="page-header">
+        <h1>Content Generator</h1>
+        <p>Create professional, AI-powered content for your pages with enterprise-grade quality</p>
       </div>
 
       <form onSubmit={handleSubmit}>
         <div className="form-section">
           <div className="form-group">
-            <label htmlFor="title">Title *</label>
+            <label htmlFor="title">Page Title *</label>
             <input
               type="text"
               id="title"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               required
-              placeholder="Enter page title"
+              placeholder="Enter your page title"
             />
           </div>
 
@@ -116,60 +112,72 @@ export default function Home() {
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               required
-              placeholder="Describe your product or service..."
+              placeholder="Provide a detailed description of your product or service..."
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="tone">Tone</label>
-            <select
-              id="tone"
-              value={formData.tone}
-              onChange={(e) => setFormData({ ...formData, tone: e.target.value })}
-            >
-              <option value="professional">Professional</option>
-              <option value="casual">Casual</option>
-              <option value="friendly">Friendly</option>
-              <option value="formal">Formal</option>
-              <option value="conversational">Conversational</option>
-            </select>
-          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
+            <div className="form-group">
+              <label htmlFor="tone">Content Tone</label>
+              <select
+                id="tone"
+                value={formData.tone}
+                onChange={(e) => setFormData({ ...formData, tone: e.target.value })}
+              >
+                <option value="professional">Professional</option>
+                <option value="casual">Casual</option>
+                <option value="friendly">Friendly</option>
+                <option value="formal">Formal</option>
+                <option value="conversational">Conversational</option>
+              </select>
+            </div>
 
-          <div className="form-group">
-            <label htmlFor="language">Language</label>
-            <select
-              id="language"
-              value={formData.language}
-              onChange={(e) => setFormData({ ...formData, language: e.target.value })}
-            >
-              <option value="en">English</option>
-              <option value="es">Spanish</option>
-              <option value="fr">French</option>
-              <option value="de">German</option>
-              <option value="it">Italian</option>
-              <option value="pt">Portuguese</option>
-            </select>
-          </div>
+            <div className="form-group">
+              <label htmlFor="language">Language</label>
+              <select
+                id="language"
+                value={formData.language}
+                onChange={(e) => setFormData({ ...formData, language: e.target.value })}
+              >
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="it">Italian</option>
+                <option value="pt">Portuguese</option>
+              </select>
+            </div>
 
-          <div className="form-group">
-            <label htmlFor="content_type">Content Type</label>
-            <select
-              id="content_type"
-              value={formData.content_type}
-              onChange={(e) => setFormData({ ...formData, content_type: e.target.value })}
-            >
-              <option value="landing_page">Landing Page</option>
-              <option value="product_page">Product Page</option>
-              <option value="blog_post">Blog Post</option>
-              <option value="about_page">About Page</option>
-            </select>
+            <div className="form-group">
+              <label htmlFor="content_type">Content Type</label>
+              <select
+                id="content_type"
+                value={formData.content_type}
+                onChange={(e) => setFormData({ ...formData, content_type: e.target.value })}
+              >
+                <option value="landing_page">Landing Page</option>
+                <option value="product_page">Product Page</option>
+                <option value="blog_post">Blog Post</option>
+                <option value="about_page">About Page</option>
+              </select>
+            </div>
           </div>
         </div>
 
         {error && <div className="error">{error}</div>}
 
         <button type="submit" className="button" disabled={loading}>
-          {loading ? 'Generating Content...' : 'Generate Content'}
+          {loading ? (
+            <>
+              <span>⏳</span>
+              <span>Generating Content...</span>
+            </>
+          ) : (
+            <>
+              <span>✨</span>
+              <span>Generate Content</span>
+            </>
+          )}
         </button>
       </form>
 
@@ -232,9 +240,9 @@ export default function Home() {
                 <p><strong>Description:</strong> {content.seo_meta.description}</p>
                 <p><strong>Keywords:</strong> {content.seo_meta.keywords.join(', ')}</p>
                 
-                <h3>FAQs</h3>
+                <h3>Frequently Asked Questions</h3>
                 {content.faqs.map((faq, idx) => (
-                  <div key={idx}>
+                  <div key={idx} style={{ marginBottom: '1rem' }}>
                     <p><strong>Q: {faq.question}</strong></p>
                     <p>A: {faq.answer}</p>
                   </div>
@@ -248,13 +256,13 @@ export default function Home() {
 
           <div className="export-buttons">
             <button className="export-button" onClick={() => handleExport('html')}>
-              Export HTML
+              📥 Export HTML
             </button>
             <button className="export-button" onClick={() => handleExport('markdown')}>
-              Export Markdown
+              📥 Export Markdown
             </button>
             <button className="export-button" onClick={() => handleExport('json')}>
-              Export JSON
+              📥 Export JSON
             </button>
           </div>
         </div>
@@ -262,4 +270,3 @@ export default function Home() {
     </div>
   )
 }
-

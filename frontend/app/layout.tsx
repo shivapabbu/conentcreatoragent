@@ -1,12 +1,14 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import Sidebar from './components/Sidebar'
+import Header from './components/Header'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Intelligent Content Creator',
-  description: 'AWS Bedrock-powered content generation platform',
+  title: 'ContentAI - Enterprise Content Generation Platform',
+  description: 'AWS Bedrock-powered intelligent content creation platform with STANDs alignment',
 }
 
 export default function RootLayout({
@@ -16,8 +18,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <div className="app-container">
+          <Sidebar />
+          <div className="main-content">
+            <Header />
+            <main className="content-area">
+              {children}
+            </main>
+          </div>
+        </div>
+      </body>
     </html>
   )
 }
-
